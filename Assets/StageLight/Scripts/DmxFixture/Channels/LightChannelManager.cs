@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+#if USE_VLB
+using VLB;
+#endif
 
 namespace StageLight.DmxFixture.Channels
 {
@@ -10,6 +13,10 @@ namespace StageLight.DmxFixture.Channels
         [SerializeField] private float _lightIntensityCoefficient = 1;
         [SerializeField] private List<SyncMaterial> _syncMaterials = new();
 
+#if USE_VLB
+        [SerializeField] private List<VolumetricLightBeamHD> _volumetricLightBeamHd;
+#endif
+
         public Color32 Color32 { get; set; } = new(0, 0, 0, 0);
         public float Intensity { get; set; } = 1;
         public float? Angle { get; set; }
@@ -18,6 +25,9 @@ namespace StageLight.DmxFixture.Channels
         public void Init()
         {
             _lights = GetComponentsInChildren<Light>().ToList();
+#if USE_VLB
+            _volumetricLightBeamHd = GetComponentsInChildren<VolumetricLightBeamHD>().ToList();
+#endif
         }
 
         public void Reset()
@@ -37,6 +47,13 @@ namespace StageLight.DmxFixture.Channels
         {
             UpdateLight();
             UpdateMaterial();
+#if USE_VLB
+            foreach (var volumetricLightBeam in _volumetricLightBeamHd.Where(volumetricLightBeam =>
+                         volumetricLightBeam != null))
+            {
+                volumetricLightBeam.UpdateAfterManualPropertyChange();
+            }
+#endif
         }
 
         private void UpdateLight()
