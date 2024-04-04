@@ -135,6 +135,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "net.naoyakohda.artnet-unity": {
+      "version": "https://github.com/nasshu2916/ArtNet-Unity.git?path=/Assets/ArtNet#master",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "dc14a35d009be5e8e888e3041f64f6f17691176b"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
