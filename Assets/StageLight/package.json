@@ -1,0 +1,16 @@
+{
+  "name": "net.naoyakohda.stage-light",
+  "author": "Naoya Kohda",
+  "version": "0.0.1",
+  "displayName": "Unity Stage Light",
+  "description": "Unity Stage Light is a library using ArtNet-Unity",
+  "dependencies": {},
+  "keywords": [
+    "unity",
+    "ArtNet",
+    "DMX"
+  ],
+  "license": "MIT License",
+  "unity": "2022.3",
+  "samples": []
+}
