@@ -13,7 +13,7 @@ namespace StageLight.DmxFixture.Channels
         Roll
     }
 
-    public class RotationChannel : ChannelBase<float>
+    public class RotationChannel : ChannelBase<float>, ISmoothChannel
     {
         [SerializeField] private List<Transform> _rotationTarget = new();
         [SerializeField] private Axis _axis = Axis.Pan;
@@ -30,15 +30,19 @@ namespace StageLight.DmxFixture.Channels
 
         public override int ChannelSize { get; } = 2;
 
+        public bool IsSmooth { get => _smooth; set => _smooth = value; }
+        public float SmoothTime { get => _smoothTime; set => _smoothTime = value; }
+        public float SmoothMaxSpeed { get => _smoothMaxSpeed; set => _smoothMaxSpeed = value; }
+
         public void Update()
         {
-            if (!_smooth) return;
+            if (!IsSmooth) return;
 
             var angle = Mathf.SmoothDamp(_prevAngle,
                 _targetAngle,
                 ref _currentVelocity,
-                _smoothTime,
-                _smoothMaxSpeed);
+                SmoothTime,
+                SmoothMaxSpeed);
 
             ApplyRotation(angle);
         }
@@ -54,7 +58,7 @@ namespace StageLight.DmxFixture.Channels
             var collectedValue = Mathf.Lerp(_minRotation, _maxRotation, value);
             _targetAngle = _invert ? -collectedValue : collectedValue;
 
-            if (_smooth) return;
+            if (IsSmooth) return;
 
             ApplyRotation(_targetAngle);
         }

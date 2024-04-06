@@ -5,9 +5,8 @@ using UnityEngine;
 namespace StageLight.DmxFixture.Channels
 {
     [RequireComponent(typeof(LightChannelManager))]
-    public sealed class ZoomChannel : ChannelBase<float>
+    public sealed class ZoomChannel : ChannelBase<float>, ISmoothChannel
     {
-
         [SerializeField] private float _minAngle = 15;
         [SerializeField] private float _maxAngle = 75;
         [SerializeField] private bool _smooth = true;
@@ -21,6 +20,10 @@ namespace StageLight.DmxFixture.Channels
 
         public override int ChannelSize { get; } = 1;
 
+        public bool IsSmooth { get => _smooth; set => _smooth = value; }
+        public float SmoothTime { get => _smoothTime; set => _smoothTime = value; }
+        public float SmoothMaxSpeed { get => _smoothMaxSpeed; set => _smoothMaxSpeed = value; }
+
         private void Reset()
         {
             _lightChannelManager = GetComponent<LightChannelManager>();
@@ -28,13 +31,13 @@ namespace StageLight.DmxFixture.Channels
 
         public void Update()
         {
-            if (!_smooth) return;
+            if (!IsSmooth) return;
 
             var angle = Mathf.SmoothDamp(_prevAngle,
                 _targetAngle,
                 ref _currentVelocity,
-                _smoothTime,
-                _smoothMaxSpeed);
+                SmoothTime,
+                SmoothMaxSpeed);
 
             ApplyAngle(angle);
         }
@@ -47,7 +50,7 @@ namespace StageLight.DmxFixture.Channels
         protected override void UpdateChannel(float value)
         {
             _targetAngle = Mathf.Lerp(_minAngle, _maxAngle, value);
-            if (_smooth) return;
+            if (IsSmooth) return;
 
             ApplyAngle(_targetAngle);
         }
