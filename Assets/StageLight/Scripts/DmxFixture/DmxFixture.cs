@@ -33,6 +33,14 @@ namespace StageLight.DmxFixture
 
         public List<DmxChannel> Channels => _channels;
 
+        private void Reset()
+        {
+            if (string.IsNullOrEmpty(_name))
+            {
+                _name = name;
+            }
+        }
+
         public int ChannelCount()
         {
             return _channels.Sum(ChannelLength);
