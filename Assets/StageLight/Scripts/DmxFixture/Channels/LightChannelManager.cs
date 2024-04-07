@@ -21,15 +21,6 @@ namespace StageLight.DmxFixture.Channels
         public float Intensity { get; set; } = 1;
         public float? Angle { get; set; }
 
-        [ContextMenu("Init")]
-        public void Init()
-        {
-            _lights = GetComponentsInChildren<Light>().ToList();
-#if USE_VLB
-            _volumetricLightBeamHd = GetComponentsInChildren<VolumetricLightBeamHD>().ToList();
-#endif
-        }
-
         public void Reset()
         {
             Init();
@@ -53,6 +44,15 @@ namespace StageLight.DmxFixture.Channels
             {
                 volumetricLightBeam.UpdateAfterManualPropertyChange();
             }
+#endif
+        }
+
+        [ContextMenu("Init")]
+        public void Init()
+        {
+            _lights = GetComponentsInChildren<Light>().ToList();
+#if USE_VLB
+            _volumetricLightBeamHd = GetComponentsInChildren<VolumetricLightBeamHD>().ToList();
 #endif
         }
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using StageLight.DmxFixture.Channels;
+using UnityEngine;
 
 namespace StageLight.DmxFixture
 {
@@ -12,6 +12,16 @@ namespace StageLight.DmxFixture
         [SerializeField, Range(1, 512)] private int _universe = 1;
         [SerializeField, Range(1, 512)] private int _startAddress = 1;
         [SerializeField] private List<DmxChannel> _channels = new();
+
+        public List<DmxChannel> Channels => _channels;
+
+        private void Reset()
+        {
+            if (string.IsNullOrEmpty(_name))
+            {
+                _name = name;
+            }
+        }
 
         public string Name
         {
@@ -29,16 +39,6 @@ namespace StageLight.DmxFixture
         {
             get => _startAddress;
             set => _startAddress = value;
-        }
-
-        public List<DmxChannel> Channels => _channels;
-
-        private void Reset()
-        {
-            if (string.IsNullOrEmpty(_name))
-            {
-                _name = name;
-            }
         }
 
         public int ChannelCount()

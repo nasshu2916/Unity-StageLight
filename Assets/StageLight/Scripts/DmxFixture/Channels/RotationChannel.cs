@@ -20,19 +20,23 @@ namespace StageLight.DmxFixture.Channels
 
         [SerializeField] private float _minRotation = -180;
         [SerializeField] private float _maxRotation = 180;
-        [SerializeField] private bool _invert = false;
+        [SerializeField] private bool _invert;
         [SerializeField] private bool _smooth = true;
         [SerializeField] private float _smoothTime = 0.1f;
         [SerializeField] private float _smoothMaxSpeed = float.PositiveInfinity;
+        private float _currentVelocity;
 
         private float _targetAngle, _prevAngle;
-        private float _currentVelocity;
 
         public override int ChannelSize { get; } = 2;
 
-        public bool IsSmooth { get => _smooth; set => _smooth = value; }
-        public float SmoothTime { get => _smoothTime; set => _smoothTime = value; }
-        public float SmoothMaxSpeed { get => _smoothMaxSpeed; set => _smoothMaxSpeed = value; }
+        private Vector3 RotationVector => _axis switch
+        {
+            Axis.Tilt => Vector3.right,
+            Axis.Pan => Vector3.up,
+            Axis.Roll => Vector3.forward,
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
         public void Update()
         {
@@ -46,6 +50,10 @@ namespace StageLight.DmxFixture.Channels
 
             ApplyRotation(angle);
         }
+
+        public bool IsSmooth { get => _smooth; set => _smooth = value; }
+        public float SmoothTime { get => _smoothTime; set => _smoothTime = value; }
+        public float SmoothMaxSpeed { get => _smoothMaxSpeed; set => _smoothMaxSpeed = value; }
 
         protected override float CastValue(ReadOnlySpan<byte> values)
         {
@@ -74,13 +82,5 @@ namespace StageLight.DmxFixture.Channels
 
             _prevAngle = angle;
         }
-
-        private Vector3 RotationVector => _axis switch
-        {
-            Axis.Tilt => Vector3.right,
-            Axis.Pan => Vector3.up,
-            Axis.Roll => Vector3.forward,
-            _ => throw new ArgumentOutOfRangeException()
-        };
     }
 }

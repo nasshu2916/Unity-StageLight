@@ -3,33 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using ArtNet;
 using ArtNet.Packets;
-using UnityEngine;
 using StageLight.DmxFixture;
+using UnityEngine;
 
 namespace StageLight
 {
     public class DmxFixtureManager : MonoBehaviour
     {
-        private Dictionary<ushort, byte[]> DmxDictionary { get; } = new();
         private readonly Queue<ushort> _updatedUniverses = new();
+        private Dictionary<ushort, byte[]> DmxDictionary { get; } = new();
         public Dictionary<int, IEnumerable<IDmxFixture>> DmxDevices { get; private set; }
-
-        private static Dictionary<int, IEnumerable<IDmxFixture>> FindDmxDevices()
-        {
-            return FindObjectsOfType<MonoBehaviour>().OfType<IDmxFixture>()
-                .GroupBy(device => device.Universe).ToDictionary(g => g.Key - 1, g => g as IEnumerable<IDmxFixture>);
-        }
-
-        [ContextMenu("Init")]
-        public void Init()
-        {
-            DmxDevices = FindDmxDevices();
-        }
-
-        public void OnEnable()
-        {
-            Init();
-        }
 
         public void Update()
         {
@@ -51,6 +34,24 @@ namespace StageLight
                     }
                 }
             }
+        }
+
+        public void OnEnable()
+        {
+            Init();
+        }
+
+        private static Dictionary<int, IEnumerable<IDmxFixture>> FindDmxDevices()
+        {
+            return FindObjectsOfType<MonoBehaviour>().OfType<IDmxFixture>()
+                .GroupBy(device => device.Universe)
+                .ToDictionary(g => g.Key - 1, g => g as IEnumerable<IDmxFixture>);
+        }
+
+        [ContextMenu("Init")]
+        public void Init()
+        {
+            DmxDevices = FindDmxDevices();
         }
 
         public void ReceivedDmxPacket(ReceivedData<DmxPacket> receivedData)

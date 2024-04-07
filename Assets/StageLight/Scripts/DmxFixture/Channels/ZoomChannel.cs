@@ -14,15 +14,11 @@ namespace StageLight.DmxFixture.Channels
         [SerializeField] private float _smoothMaxSpeed = float.PositiveInfinity;
 
         [SerializeField] private LightChannelManager _lightChannelManager;
-
-        private float _targetAngle, _prevAngle;
         private float _currentVelocity;
 
-        public override int ChannelSize { get; } = 1;
+        private float _targetAngle, _prevAngle;
 
-        public bool IsSmooth { get => _smooth; set => _smooth = value; }
-        public float SmoothTime { get => _smoothTime; set => _smoothTime = value; }
-        public float SmoothMaxSpeed { get => _smoothMaxSpeed; set => _smoothMaxSpeed = value; }
+        public override int ChannelSize { get; } = 1;
 
         private void Reset()
         {
@@ -41,6 +37,10 @@ namespace StageLight.DmxFixture.Channels
 
             ApplyAngle(angle);
         }
+
+        public bool IsSmooth { get => _smooth; set => _smooth = value; }
+        public float SmoothTime { get => _smoothTime; set => _smoothTime = value; }
+        public float SmoothMaxSpeed { get => _smoothMaxSpeed; set => _smoothMaxSpeed = value; }
 
         protected override float CastValue(ReadOnlySpan<byte> values)
         {
