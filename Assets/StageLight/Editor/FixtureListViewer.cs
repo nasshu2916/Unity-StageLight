@@ -1,0 +1,132 @@
+using System.Collections.Generic;
+using System.Linq;
+using StageLight.DmxFixture;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UIElements.Button;
+
+namespace StageLight
+{
+    public class FixtureListViewer : EditorWindow
+    {
+        private List<IDmxFixture> _fixtures = new();
+        private MultiColumnListView _multiColumnListView;
+
+        [MenuItem("ArtNet/FixtureList")]
+        public static void ShowFixtureListViewer()
+        {
+            var wnd = GetWindow<FixtureListViewer>();
+            wnd.titleContent = new GUIContent("ChannelListViewer");
+        }
+
+        public void CreateGUI()
+        {
+            var root = rootVisualElement;
+
+            var headerElement = new VisualElement()
+            {
+                style =
+                {
+                    flexDirection = FlexDirection.Row, alignItems = Align.Center
+                }
+            };
+            headerElement.Add(new Button(Refresh)
+            {
+                text = "Reload",
+                style =
+                {
+                    width = 100
+                }
+            });
+            headerElement.Add(new Label("Reloads the list of fixtures"));
+
+            root.Add(headerElement);
+
+            _multiColumnListView = new MultiColumnListView
+            {
+                itemsSource = _fixtures
+            };
+
+            var nameColumn = new Column
+            {
+                title = "Fixture Name", width = 100, bindCell = (e, i) => e.Q<Label>().text = _fixtures[i].Name
+            };
+            _multiColumnListView.columns.Add(nameColumn);
+
+            var universeColumn = new Column
+            {
+                title = "Universe",
+                width = 100,
+                bindCell = (e, i) =>
+                {
+                    var field = new IntegerField
+                    {
+                        value = _fixtures[i].Universe
+                    };
+                    field.RegisterValueChangedCallback(evt =>
+                    {
+                        var value = evt.newValue;
+                        if (value is > 0 and <= 512)
+                        {
+                            _fixtures[i].Universe = value;
+                        }
+                    });
+                    e.Add(field);
+                }
+            };
+            _multiColumnListView.columns.Add(universeColumn);
+
+            var startAddressColumn = new Column
+            {
+                title = "Start Address",
+                width = 100,
+                bindCell = (e, i) =>
+                {
+                    var field = new IntegerField
+                    {
+                        value = _fixtures[i].StartAddress
+                    };
+                    field.RegisterValueChangedCallback(evt =>
+                    {
+                        var value = evt.newValue;
+                        if (value is > 0 and <= 512)
+                        {
+                            _fixtures[i].StartAddress = value;
+                        }
+                    });
+                    e.Add(field);
+                }
+            };
+            _multiColumnListView.columns.Add(startAddressColumn);
+
+            var channelCountColumn = new Column
+            {
+                title = "Channel Count",
+                width = 100,
+                bindCell = (e, i) => e.Q<Label>().text = _fixtures[i].ChannelCount().ToString()
+            };
+            _multiColumnListView.columns.Add(channelCountColumn);
+
+            root.Add(_multiColumnListView);
+        }
+
+        private void Reset()
+        {
+            _fixtures = FindAllFixtures();
+        }
+
+        private void Refresh()
+        {
+            _fixtures = FindAllFixtures();
+            _multiColumnListView.itemsSource = _fixtures;
+        }
+
+        private static List<IDmxFixture> FindAllFixtures()
+        {
+            return FindObjectsByType<GameObject>(FindObjectsSortMode.InstanceID)
+                .Select(gameObject => gameObject.GetComponent<IDmxFixture>()).Where(fixture => fixture != null)
+                .ToList();
+        }
+    }
+}
