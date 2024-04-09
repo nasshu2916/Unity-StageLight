@@ -4,7 +4,6 @@ using StageLight.DmxFixture;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Button = UnityEngine.UIElements.Button;
 
 namespace StageLight
 {
@@ -22,6 +21,7 @@ namespace StageLight
 
         public void CreateGUI()
         {
+            _fixtures = FindAllFixtures();
             var root = rootVisualElement;
 
             var headerElement = new VisualElement()
@@ -48,6 +48,32 @@ namespace StageLight
                 itemsSource = _fixtures
             };
 
+            var objectNameColumn = new Column
+            {
+                title = "Object Name",
+                width = 100,
+                bindCell = (e, i) =>
+                {
+                    e.Clear();
+                    var obj = (Object)_fixtures[i];
+                    var label = new Label
+                    {
+                        text = obj != null ? obj.name : "",
+                        style =
+                        {
+                            height = Length.Percent(100)
+                        }
+                    };
+
+                    label.RegisterCallback<ClickEvent>(evt =>
+                    {
+                        EditorGUIUtility.PingObject(obj);
+                    });
+                    e.Add(label);
+                }
+            };
+            _multiColumnListView.columns.Add(objectNameColumn);
+
             var nameColumn = new Column
             {
                 title = "Fixture Name", width = 100, bindCell = (e, i) => e.Q<Label>().text = _fixtures[i].Name
@@ -60,6 +86,7 @@ namespace StageLight
                 width = 100,
                 bindCell = (e, i) =>
                 {
+                    e.Clear();
                     var field = new IntegerField
                     {
                         value = _fixtures[i].Universe
@@ -83,6 +110,7 @@ namespace StageLight
                 width = 100,
                 bindCell = (e, i) =>
                 {
+                    e.Clear();
                     var field = new IntegerField
                     {
                         value = _fixtures[i].StartAddress
@@ -111,22 +139,17 @@ namespace StageLight
             root.Add(_multiColumnListView);
         }
 
-        private void Reset()
-        {
-            _fixtures = FindAllFixtures();
-        }
-
         private void Refresh()
         {
             _fixtures = FindAllFixtures();
-            _multiColumnListView.itemsSource = _fixtures;
+            if (_multiColumnListView != null) _multiColumnListView.itemsSource = _fixtures;
         }
 
         private static List<IDmxFixture> FindAllFixtures()
         {
-            return FindObjectsByType<GameObject>(FindObjectsSortMode.InstanceID)
+            return FindObjectsByType<GameObject>(FindObjectsSortMode.None)
                 .Select(gameObject => gameObject.GetComponent<IDmxFixture>()).Where(fixture => fixture != null)
-                .ToList();
+                .OrderBy(fixture => fixture.Name).ThenBy(fixture => ((Object)fixture).name).ToList();
         }
     }
 }
