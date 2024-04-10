@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using StageLight.DmxFixture;
-using Unity.Plastic.Newtonsoft.Json.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,20 +14,13 @@ namespace StageLight
         private List<IDmxFixture> _fixtures = new();
         private MultiColumnListView _multiColumnListView;
 
-        [MenuItem("ArtNet/FixtureList")]
-        public static void ShowFixtureListViewer()
-        {
-            var wnd = GetWindow<FixtureListViewer>();
-            wnd.titleContent = new GUIContent("ChannelListViewer");
-        }
-
         public void CreateGUI()
         {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             _fixtures = FindAllFixtures();
             var root = rootVisualElement;
 
-            var headerElement = new VisualElement()
+            var headerElement = new VisualElement
             {
                 style =
                 {
@@ -139,6 +131,13 @@ namespace StageLight
             _multiColumnListView.columns.Add(channelModeColumn);
 
             root.Add(_multiColumnListView);
+        }
+
+        [MenuItem("ArtNet/FixtureList")]
+        public static void ShowFixtureListViewer()
+        {
+            var wnd = GetWindow<FixtureListViewer>();
+            wnd.titleContent = new GUIContent("ChannelListViewer");
         }
 
         private void OnPlayModeStateChanged(PlayModeStateChange state)

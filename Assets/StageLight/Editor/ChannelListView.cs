@@ -82,7 +82,7 @@ namespace StageLight
             {
                 style =
                 {
-                    flexDirection = FlexDirection.Row, alignItems = Align.Center,
+                    flexDirection = FlexDirection.Row, alignItems = Align.Center
                 }
             };
 
