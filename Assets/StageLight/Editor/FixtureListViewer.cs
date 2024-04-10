@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using StageLight.DmxFixture;
+using Unity.Plastic.Newtonsoft.Json.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace StageLight
 {
@@ -94,10 +97,9 @@ namespace StageLight
                     field.RegisterValueChangedCallback(evt =>
                     {
                         var value = evt.newValue;
-                        if (value is > 0 and <= 512)
-                        {
-                            _fixtures[i].Universe = value;
-                        }
+                        if (value is <= 0 or > 512) return;
+
+                        UpdateFixture(i, f => f.Universe = value);
                     });
                     e.Add(field);
                 }
@@ -118,10 +120,9 @@ namespace StageLight
                     field.RegisterValueChangedCallback(evt =>
                     {
                         var value = evt.newValue;
-                        if (value is > 0 and <= 512)
-                        {
-                            _fixtures[i].StartAddress = value;
-                        }
+                        if (value is <= 0 or > 512) return;
+
+                        UpdateFixture(i, f => f.StartAddress = value);
                     });
                     e.Add(field);
                 }
@@ -150,6 +151,12 @@ namespace StageLight
             return FindObjectsByType<GameObject>(FindObjectsSortMode.None)
                 .Select(gameObject => gameObject.GetComponent<IDmxFixture>()).Where(fixture => fixture != null)
                 .OrderBy(fixture => fixture.Name).ThenBy(fixture => ((Object)fixture).name).ToList();
+        }
+
+        private void UpdateFixture(int index, Action<IDmxFixture> updateFun)
+        {
+            updateFun(_fixtures[index]);
+            EditorUtility.SetDirty((Object)_fixtures[index]);
         }
     }
 }
