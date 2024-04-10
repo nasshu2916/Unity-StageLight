@@ -27,9 +27,9 @@ namespace StageLight
                     foreach (var device in devices)
                     {
                         var startAddress = device.StartAddress - 1;
-                        var dmxChannelCount = device.ChannelCount();
-                        if (dmxValues.Length < startAddress + dmxChannelCount) continue;
-                        var values = dmxValues.Slice(startAddress, dmxChannelCount);
+                        var channelMode = device.ChannelMode;
+                        if (dmxValues.Length < startAddress + channelMode) continue;
+                        var values = dmxValues.Slice(startAddress, channelMode);
                         device.UpdateValues(values);
                     }
                 }

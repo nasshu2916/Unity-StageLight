@@ -27,6 +27,9 @@ namespace StageLight
             var channelListView = new ChannelListView(_targetDmxFixture!.Channels);
             root.Add(channelListView);
 
+            var channelModeField = new PropertyField(serializedObject.FindProperty("_channelMode"));
+            root.Add(channelModeField);
+
             return root;
         }
     }

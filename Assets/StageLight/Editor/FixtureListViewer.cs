@@ -130,13 +130,13 @@ namespace StageLight
             };
             _multiColumnListView.columns.Add(startAddressColumn);
 
-            var channelCountColumn = new Column
+            var channelModeColumn = new Column
             {
-                title = "Channel Count",
+                title = "Channel Mode",
                 width = 100,
-                bindCell = (e, i) => e.Q<Label>().text = _fixtures[i].ChannelCount().ToString()
+                bindCell = (e, i) => e.Q<Label>().text = _fixtures[i].ChannelMode.ToString()
             };
-            _multiColumnListView.columns.Add(channelCountColumn);
+            _multiColumnListView.columns.Add(channelModeColumn);
 
             root.Add(_multiColumnListView);
         }

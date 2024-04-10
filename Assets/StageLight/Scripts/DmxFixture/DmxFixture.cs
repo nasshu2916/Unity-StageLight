@@ -12,6 +12,7 @@ namespace StageLight.DmxFixture
         [SerializeField, Range(1, 512)] private int _universe = 1;
         [SerializeField, Range(1, 512)] private int _startAddress = 1;
         [SerializeField] private List<DmxChannel> _channels = new();
+        [SerializeField] private int _channelMode = 1;
 
         public List<DmxChannel> Channels => _channels;
 
@@ -41,13 +42,16 @@ namespace StageLight.DmxFixture
             set => _startAddress = value;
         }
 
-        public int ChannelCount()
-        {
-            return _channels.Sum(ChannelLength);
-        }
+        public int ChannelMode => _channelMode;
 
         public void UpdateValues(ReadOnlySpan<byte> values)
         {
+            if (_channels.Sum(ChannelLength) > ChannelMode)
+            {
+                Debug.LogWarning("Total Channel size exceeds ChannelMode");
+                return;
+            }
+
             var index = 0;
             foreach (var channel in _channels)
             {

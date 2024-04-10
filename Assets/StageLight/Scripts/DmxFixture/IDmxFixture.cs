@@ -7,7 +7,7 @@ namespace StageLight.DmxFixture
         public string Name { get; set; }
         public int Universe { get; set; }
         public int StartAddress { get; set; }
-        public int ChannelCount();
+        public int ChannelMode { get; }
 
         public void UpdateValues(ReadOnlySpan<byte> values);
     }
