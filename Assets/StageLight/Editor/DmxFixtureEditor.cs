@@ -2,17 +2,17 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace StageLight.DmxFixture
+namespace StageLight
 {
-    [CustomEditor(typeof(DmxFixture))]
+    [CustomEditor(typeof(DmxFixture.DmxFixture))]
     public class DmxFixtureEditor : Editor
     {
-        private DmxFixture _targetDmxFixture;
+        private DmxFixture.DmxFixture _targetDmxFixture;
 
         public override VisualElement CreateInspectorGUI()
         {
             var root = new VisualElement();
-            _targetDmxFixture = (DmxFixture)target;
+            _targetDmxFixture = (DmxFixture.DmxFixture)target;
             if (_targetDmxFixture == null) return root;
 
             var nameField = new PropertyField(serializedObject.FindProperty("_name"));

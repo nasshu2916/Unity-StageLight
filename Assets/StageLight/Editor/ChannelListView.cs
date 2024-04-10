@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using StageLight.DmxFixture.Channels;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using StageLight.DmxFixture.Channels;
 
-namespace StageLight.DmxFixture
+namespace StageLight
 {
     public class ChannelListView : VisualElement
     {
