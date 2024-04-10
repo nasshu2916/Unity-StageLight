@@ -24,6 +24,7 @@ namespace StageLight
 
         public void CreateGUI()
         {
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             _fixtures = FindAllFixtures();
             var root = rootVisualElement;
 
@@ -138,6 +139,14 @@ namespace StageLight
             _multiColumnListView.columns.Add(channelCountColumn);
 
             root.Add(_multiColumnListView);
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state == PlayModeStateChange.EnteredEditMode)
+            {
+                Refresh();
+            }
         }
 
         private void Refresh()
