@@ -32,6 +32,16 @@ namespace StageLight.DmxFixture.Channels
             {
                 syncMaterial.Init();
             }
+
+            foreach (var l in _lights.Where(l => l != null))
+            {
+                l.intensity = 0;
+            }
+
+            foreach (var vlb in _volumetricLightBeamHd.Where(l => l != null))
+            {
+                vlb.UpdateAfterManualPropertyChange();
+            }
         }
 
         private void Update()
