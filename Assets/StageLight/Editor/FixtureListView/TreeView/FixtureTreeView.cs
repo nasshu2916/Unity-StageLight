@@ -38,15 +38,7 @@ namespace StageLight.FixtureListView
             if (element == null) { return; }
 
             var column = HeaderConfig.HeaderColumnTypes[columnIndex];
-
-            switch (column)
-            {
-                default:
-                    var text = element.GetDisplayText(column);
-                    var style = element.GetLabelStyle(column);
-                    EditorGUI.LabelField(rect, text, style);
-                    break;
-            }
+            element.DrawField(rect, column);
         }
 
         public void Clean()

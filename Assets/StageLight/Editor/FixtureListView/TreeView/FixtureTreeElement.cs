@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using StageLight.DmxFixture;
+using UnityEditor;
 using UnityEngine;
 
 namespace StageLight.FixtureListView
@@ -23,21 +24,52 @@ namespace StageLight.FixtureListView
 
         private string ObjectName => GameObject.name;
 
-        private string ObjectParentName
-        {
-            get
-            {
-                var parent = GameObject.transform.parent;
-                return parent == null ? "" : parent.name;
-            }
-        }
+        [CanBeNull] private Transform Parent => GameObject.transform.parent;
+
+        private string ParentName => Parent != null ? Parent.name : "";
 
         private int Universe => Fixture.Universe;
         private int StartAddress => Fixture.StartAddress;
         private int ChannelMode => Fixture.ChannelMode;
 
+        public void DrawField(Rect rect, ColumnType column)
+        {
+            Texture2D icon;
+            switch (column)
+            {
+                case ColumnType.ObjectName:
+                    icon = PrefabUtility.GetIconForGameObject(GameObject);
+                    EditorGUI.LabelField(rect, new GUIContent(ObjectName, icon), MyStyle.DefaultLabel);
+                    break;
+
+                case ColumnType.ParentName:
+                    var parent = Parent;
+                    if (parent == null)
+                    {
+                        EditorGUI.LabelField(rect, "", MyStyle.DefaultLabel);
+                    }
+                    else
+                    {
+                        icon = PrefabUtility.GetIconForGameObject(parent.gameObject);
+                        EditorGUI.LabelField(rect, new GUIContent(ParentName, icon), MyStyle.DefaultLabel);
+                    }
+
+                    break;
+                case ColumnType.FixtureName:
+                case ColumnType.Universe:
+                case ColumnType.StartAddress:
+                case ColumnType.ChannelMode:
+                default:
+                    var text = GetDisplayText(column);
+                    var style = GetLabelStyle(column);
+                    EditorGUI.LabelField(rect, text, style);
+                    break;
+            }
+        }
+
+
         /// <summary> TreeViewのラベルのGUIStyle取得 </summary>
-        public GUIStyle GetLabelStyle(ColumnType column)
+        private GUIStyle GetLabelStyle(ColumnType column)
         {
             var value = GetColumnValue(column);
             return (column, value) switch
@@ -54,7 +86,7 @@ namespace StageLight.FixtureListView
 
 
         /// <summary> TreeViewで表示するテキスト取得 </summary>
-        public string GetDisplayText(ColumnType column)
+        private string GetDisplayText(ColumnType column)
         {
             var value = GetColumnValue(column);
             return value switch
@@ -72,7 +104,7 @@ namespace StageLight.FixtureListView
             {
                 ColumnType.FixtureName => FixtureName,
                 ColumnType.ObjectName => ObjectName,
-                ColumnType.ParentName => ObjectParentName,
+                ColumnType.ParentName => ParentName,
                 ColumnType.Universe => Universe,
                 ColumnType.StartAddress => StartAddress,
                 ColumnType.ChannelMode => ChannelMode,
