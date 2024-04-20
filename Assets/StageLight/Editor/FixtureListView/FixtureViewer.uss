@@ -1,0 +1,3 @@
+#reloadButton {
+    background-color: green;
+}
