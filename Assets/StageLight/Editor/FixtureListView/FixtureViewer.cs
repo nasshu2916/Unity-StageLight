@@ -30,6 +30,8 @@ namespace StageLight.FixtureListView
             var position = window.position;
             position.width = HeaderConfig.InitialHeaderTotalWidth + 50f;
             position.height = 400f;
+            position.xMin = 400f;
+            position.yMin = 100f;
         }
 
         public void CreateGUI()
