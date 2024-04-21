@@ -9,6 +9,7 @@ namespace StageLight.DmxFixture.Channels
     {
         [SerializeField] private float _minAngle = 15;
         [SerializeField] private float _maxAngle = 75;
+        [SerializeField] private AnimationCurve _intensityZoomCurve = AnimationCurve.Linear(0, 0.99f, 1, 0.2f);
         [SerializeField] private bool _smooth = true;
         [SerializeField] private float _smoothTime = 0.1f;
         [SerializeField] private float _smoothMaxSpeed = float.PositiveInfinity;
@@ -59,6 +60,7 @@ namespace StageLight.DmxFixture.Channels
         private void ApplyAngle(float angle)
         {
             _lightChannelManager.Angle = angle;
+            _lightChannelManager.ZoomIntensity = _intensityZoomCurve.Evaluate((angle - _minAngle) / (_maxAngle - _minAngle));
             _prevAngle = angle;
         }
     }

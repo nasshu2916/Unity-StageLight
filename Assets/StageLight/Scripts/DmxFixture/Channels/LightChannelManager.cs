@@ -19,6 +19,7 @@ namespace StageLight.DmxFixture.Channels
 
         public Color32 Color32 { get; set; } = new(0, 0, 0, 0);
         public float Intensity { get; set; } = 1;
+        public float ZoomIntensity { get; set; } = 1;
         public float? Angle { get; set; }
 
         public void Reset()
@@ -68,7 +69,7 @@ namespace StageLight.DmxFixture.Channels
 
         private void UpdateLight()
         {
-            var intensity = Intensity * _lightIntensityCoefficient;
+            var intensity = Intensity * _lightIntensityCoefficient * ZoomIntensity;
             foreach (var light in _lights.Where(l => l != null))
             {
                 light.color = Color32;
