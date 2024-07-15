@@ -39,10 +39,12 @@ namespace StageLight.DmxFixture.Channels
                 l.intensity = 0;
             }
 
+#if USE_VLB
             foreach (var vlb in _volumetricLightBeamHd.Where(l => l != null))
             {
                 vlb.UpdateAfterManualPropertyChange();
             }
+#endif
         }
 
         private void Update()
